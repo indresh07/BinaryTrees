@@ -11,6 +11,21 @@ class BSTree : public BinaryTree<Key, Value> {
 protected:
   int height(BinaryNode<Key, Value>* rt);
   int _size;
+  BinaryNode<Key, Value>* getNode(const Key& key){
+    BinaryNode<Key, Value> *iterator = this->root;
+
+    while(iterator){
+      if(iterator->key == key)
+        return iterator;
+
+      if(iterator->key > key)
+        iterator = iterator->left;
+      else
+        iterator = iterator->right;
+    }
+
+    return NULL;
+  }
  public:
     Value get(const Key& key);
     /* Implement remove function that can delete a node in binary tree with given key. 
@@ -121,6 +136,7 @@ void BSTree<Key, Value>::remove(const Key& key){
         }
 
         delNode->key = iterator->key;
+        delNode->color = iterator->color;
         delNode->val = iterator->val;
         delNode->right = NULL;
         delete iterator;
@@ -138,6 +154,7 @@ void BSTree<Key, Value>::remove(const Key& key){
 
           delNode->key = iterator->key;
           delNode->val = iterator->val;
+          delNode->color = iterator->color;
           iterator->parent->left = NULL;
           delete iterator;
           _size--;
@@ -161,6 +178,7 @@ void BSTree<Key, Value>::remove(const Key& key){
 
         delNode->key = iterator->key;
         delNode->val = iterator->val;
+        delNode->color = iterator->color;
         delNode->left = NULL;
         delete iterator;
         _size--;
@@ -177,6 +195,7 @@ void BSTree<Key, Value>::remove(const Key& key){
 
           delNode->key = iterator->key;
           delNode->val = iterator->val;
+          delNode->color = iterator->color;
           iterator->parent->right = NULL;
           delete iterator;
           _size--;
