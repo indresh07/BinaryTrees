@@ -9,6 +9,9 @@
 using namespace std;
 using namespace ind;
 
+
+enum Color { RED, BLACK };
+
 template<class Key, class Value>
 class BinaryNode
 {
@@ -16,7 +19,7 @@ public:
 	Key key;
 	Value val;
 	BinaryNode<Key,Value> *left, *right, *parent;
-	int color;
+	Color color;
     /*Default constructor. Should assign the default value to key and value
      */
 	BinaryNode();

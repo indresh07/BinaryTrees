@@ -74,17 +74,9 @@ protected:
 template<class Key, class Value>
 Value BSTree<Key, Value>::get(const Key& key){
 
-    BinaryNode<Key, Value> *iterator = this->root;
-
-    while(iterator){
-      if(iterator->key == key)
-        return iterator->val;
-
-      if(iterator->key > key)
-        iterator = iterator->left;
-      else
-        iterator = iterator->right;
-    }
+    BinaryNode<Key, Value>* node;
+    if(node = getNode(key))
+      return node->val;
 
     throw "Key does not exist.";
 }
@@ -92,28 +84,18 @@ Value BSTree<Key, Value>::get(const Key& key){
 template<class Key, class Value>
 void BSTree<Key, Value>::remove(const Key& key){
 
-    BinaryNode<Key, Value> *iterator = this->root;
-    BinaryNode<Key, Value> *delNode;
+    BinaryNode<Key, Value> *delNode = getNode(key);
+    BinaryNode<Key, Value> *iterator = delNode;
 
-    //to find position of key
-    while(iterator){
-      if(iterator->key == key){
-        delNode = iterator;
-        break;
-      }
-
-      if(iterator->key > key)
-        iterator = iterator->left;
-      else
-        iterator = iterator->right;
-    }
-
-    //when key does not exists
-    if(!iterator)
-      return;
 
     //when key is at leaf node
     if(!iterator->left && !iterator->right){
+
+      if(iterator == this->root){
+        delete iterator;
+        _size--;
+        return;
+      }
       if(iterator->parent->left == iterator)
         iterator->parent->left = NULL;
       else
@@ -210,17 +192,8 @@ void BSTree<Key, Value>::remove(const Key& key){
 template<class Key, class Value>
 bool BSTree<Key, Value>::has(const Key& key){
 
-  BinaryNode<Key, Value> *iterator = this->root;
-
-  while(iterator){
-    if(iterator->key == key)
-      return true;
-
-    if(iterator->key > key)
-      iterator = iterator->left;
-    else
-      iterator = iterator->right;
-  }
+  if(getNode(key))
+    return true;
 
   return false;
 }
@@ -304,19 +277,7 @@ Key BSTree<Key, Value>::maximum(){
 template<class Key, class Value>
 Key BSTree<Key, Value>::successor(const Key& key){
 
-  BinaryNode<Key, Value> *iterator = this->root;
-
-  //to find position of given key
-  while(iterator){
-
-    if(iterator->key == key)
-      break;
-
-    if(iterator->key > key)
-      iterator = iterator->left;
-    else
-      iterator = iterator->right;
-  }
+  BinaryNode<Key, Value> *iterator = getNode(key);
 
   if(!iterator)
     throw "key does not exists.";
@@ -354,18 +315,7 @@ Key BSTree<Key, Value>::successor(const Key& key){
 template<class Key, class Value>
 Key BSTree<Key, Value>::predecessor(const Key& key){
 
-  BinaryNode<Key, Value> *iterator = this->root;
-
-  //to find position of given key
-  while(iterator){
-    if(iterator->key == key)
-      break;
-
-    if(iterator->key > key)
-      iterator = iterator->left;
-    else
-      iterator = iterator->right;
-  }
+  BinaryNode<Key, Value> *iterator = getNode(key);
 
   if(!iterator)
     throw "key does not exists.";

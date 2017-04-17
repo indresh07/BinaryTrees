@@ -2,12 +2,12 @@
 #define RBTree_HPP_ 1
 #include "BSTree.hpp"
 #include "limits.h"
+#include <string>
 /* The color enumeration.
  * Please use this and not integers or characters to store the color of the node
  * in your red black tree.
  * Also create a class RBTNode which should inherit from BinaryNode and has the attribute color in it. 
  */
-enum Color { RED, BLACK };
 
 template <class Key, class Value>
 class RBTree : public BSTree<Key, Value> {
@@ -47,7 +47,7 @@ public:
 		void put(const Key& key, const Value& value);
 		int blackHeight();
 		void remove(const Key& key);
-		int color(Key key);
+		string color(Key key);
 	/*
 	 * Apart from these functions, also provide functions for rotations in the tree.
 	 * The signature of the rotation functions is omitted to provide you flexibility in how you implement the internals of your node.
@@ -257,6 +257,7 @@ void RBTree<Key, Value>::remove(const Key& key){
 	if(!node->left && !node->right){
 		BinaryNode<Key,Value>* parent = node->parent;
 		BSTree<Key,Value> :: remove(key);
+
 		deleteRBFixup(parent);
 	}
 	else{
@@ -270,16 +271,9 @@ template <class Key, class Value>
 void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 
 	if(rt){
-		BinaryNode<Key, Value>  *sibling, *parent = rt->parent;
-		while(rt){
+		BinaryNode<Key, Value>  *sibling;
+		while(!rt){
 
-			if(rt != this->root){
-				parent = rt->parent;
-			}
-
-			if(!rt->parent)
-				break;
- 
 			if(rt == this->root){
 				break;
 			}
@@ -290,7 +284,10 @@ void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 			if(rt->key < rt->parent->key){
 				
 				sibling = rt->parent->right;
-				
+
+				if(!sibling)
+					break;
+
 				if(sibling->color == RED){
 					sibling->color = BLACK;
 					rt->parent->color = RED;
@@ -302,8 +299,7 @@ void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 					sibling->color = RED;
 					rt = rt->parent;	
 				}
-				else{
-					if(sibling->left->color == BLACK && sibling->right->color == BLACK){
+				else if(sibling->left->color == BLACK && sibling->right->color == BLACK){
 						sibling->color = RED;
 						rt = rt->parent;
 					}
@@ -316,8 +312,7 @@ void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 							
 							sibling = rt->parent->right;
 						}
-						else{
-							if(sibling->right->color == BLACK){
+						else if(sibling->right->color == BLACK){
 								sibling->left->color = BLACK;
 								sibling->color = RED;
 								right_rotate(sibling);
@@ -325,18 +320,22 @@ void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 								sibling = rt->parent->right;
 							}
 	
-							sibling->color = rt->parent->color;
-							rt->parent->color = BLACK;
-							sibling->right->color = BLACK;
-							left_rotate(rt->parent);
+						if(!sibling)
+							break;
 
-							rt=this->root;
-						}
+						sibling->color = rt->parent->color;
+						rt->parent->color = BLACK;
+						sibling->right->color = BLACK;
+						left_rotate(rt->parent);
+
+						rt=this->root;
 					}
-				}
 			}
 			else{
 				sibling = rt->parent->left;
+
+				if(!sibling)
+					break;
 			
 				if(sibling->color == RED){
 
@@ -345,13 +344,12 @@ void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 					right_rotate(rt->parent);
 					sibling = rt->parent->left;
 				}
-				
+
 				if(!sibling->right && !sibling->left){
 					sibling->color=RED;
 					rt = rt->parent;	
 				}
-				else{
-					if(sibling->right->color == BLACK && sibling->left->color == BLACK){
+				else if(sibling->right->color == BLACK && sibling->left->color == BLACK){
 						sibling->color = RED;
 						rt = rt->parent;
 					}
@@ -363,8 +361,7 @@ void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 							
 							sibling = rt->parent->left;
 						}
-						else{
-							if(sibling->left->color == BLACK){
+						else if(sibling->left->color == BLACK){
 
 								sibling->right->color = BLACK;
 								sibling->color = RED;
@@ -372,14 +369,16 @@ void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 								sibling = rt->parent->left;
 							}
 						
-							sibling->color = rt->parent->color;
-							rt->parent->color = BLACK;
-							sibling->left->color = BLACK;
-							right_rotate(rt->parent);
-							rt = this->root;
-						}
+						if(!sibling)
+							break;
+
+						sibling->color = rt->parent->color;
+						rt->parent->color = BLACK;
+						sibling->left->color = BLACK;
+						right_rotate(rt->parent);
+						rt = this->root;
 					}
-				}	
+				
 			}
 		}
 
@@ -389,7 +388,7 @@ void RBTree<Key,Value> :: deleteRBFixup(BinaryNode<Key,Value>*  rt){
 
 
 template <class Key, class Value>
-int RBTree<Key,Value> :: color(Key key){
+string RBTree<Key,Value> :: color(Key key){
 
 	if(this->has(key)){
 		
@@ -397,10 +396,10 @@ int RBTree<Key,Value> :: color(Key key){
 
 		if(node->color == RED){
 			
-			std::cout << "RED";
+			return "RED";
 		}
 		else{
-			std::cout << "BLACK";
+			return "BLACK";
 		}
 	}
 }

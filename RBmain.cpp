@@ -136,7 +136,7 @@ int main(int arc, char* argv[]){
 
 			case 16 :	cout<<"Enter key : ";
 						cin>>key;
-						tree.color(key);
+						cout<<"["<<key<<"] : "<<tree.color(key);
 						break;
 
 			case 0 :	exit(EXIT_SUCCESS);
