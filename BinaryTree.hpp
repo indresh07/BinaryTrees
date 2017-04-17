@@ -28,12 +28,18 @@ template<class Key, class Value>
 BinaryNode<Key, Value>::BinaryNode(){
 	this->key = DEFAULT_KEY;
 	val = (Value)DEFAULT_VAL;
+	left = NULL;
+	right = NULL;
+	parent = NULL;
 }
 
 template<class Key, class Value>
 BinaryNode<Key, Value>::BinaryNode(Key key, Value value){
 	this->key = key;
 	val = value;
+	left = NULL;
+	right = NULL;
+	parent = NULL;
 }
 
 template<class Key, class Value>
@@ -236,9 +242,6 @@ void BinaryTree<Key, Value>::put(const Key& key, const Value& value){
 
 	if(root == NULL){
 		root = new BinaryNode<Key, Value>(key, value);
-		root->left == NULL;
-		root->right == NULL;
-		root->parent == NULL;
 		nodes.push(root);
 		return;
 	}
@@ -247,8 +250,6 @@ void BinaryTree<Key, Value>::put(const Key& key, const Value& value){
 
 	BinaryNode<Key, Value> *newNode;
 	newNode = new BinaryNode<Key, Value>(key, value);
-	newNode->left = NULL;
-	newNode->right = NULL;
 	newNode->parent = node;
 	
 	if(node->left == NULL){

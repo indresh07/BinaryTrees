@@ -8,20 +8,21 @@ class BSTree : public BinaryTree<Key, Value> {
  * Only override those where you can decrease the time complexity and where you absolutely need to do it.
  * Also make sure that all inherited functions work correctly in the context of a binary search tree.
  */
+protected:
   int height(BinaryNode<Key, Value>* rt);
   int _size;
  public:
     Value get(const Key& key);
     /* Implement remove function that can delete a node in binary tree with given key. 
      */
-    void remove(const Key& key) ;
+    virtual void remove(const Key& key) ;
     /* Implement has function which will return true if the given key is present in binary tree 
      * otherwise return false.  
      */
     bool has(const Key& key) ;  
     /* Implement put function such that newly inserted node keep the tree balanced. 
      */ 
-    void put(const Key& key, const Value& value) ;
+    virtual void put(const Key& key, const Value& value) ;
     /*
      *This method returns the minimum element in the binary tree.
      */
@@ -93,11 +94,11 @@ void BSTree<Key, Value>::remove(const Key& key){
     }
 
     //when key does not exists
-    if(iterator == NULL)
+    if(!iterator)
       return;
 
     //when key is at leaf node
-    if(iterator->left == NULL && iterator->right == NULL){
+    if(!iterator->left && !iterator->right){
       if(iterator->parent->left == iterator)
         iterator->parent->left = NULL;
       else
@@ -109,12 +110,12 @@ void BSTree<Key, Value>::remove(const Key& key){
     }
 
     //to find samllest node in right subtree
-    if(iterator->right != NULL){
+    if(iterator->right){
       iterator = iterator->right;
 
       //when root node in right subtree is smallest node
-      if(iterator->left == NULL){
-        if(iterator->right != NULL){
+      if(!iterator->left){
+        if(iterator->right){
           iterator->parent->left = iterator->right;
           iterator->right->parent = iterator->parent;
         }
@@ -128,9 +129,9 @@ void BSTree<Key, Value>::remove(const Key& key){
       }
 
       while(iterator){
-        if(iterator->left == NULL){
+        if(!iterator->left){
 
-          if(iterator->right != NULL){
+          if(iterator->right){
             iterator->parent->left = iterator->right;
             iterator->right->parent = iterator->parent;
           }
@@ -148,12 +149,12 @@ void BSTree<Key, Value>::remove(const Key& key){
     }
 
     //to find largest node in left subtree
-    if(iterator->left != NULL){
+    if(iterator->left){
       iterator = iterator->left;
 
       //when root node in left subtree is largest node
-      if(iterator->right == NULL){
-        if(iterator->left != NULL){
+      if(!iterator->right){
+        if(iterator->left){
           iterator->parent->right = iterator->left;
           iterator->left->parent = iterator->parent;
         }
@@ -167,9 +168,9 @@ void BSTree<Key, Value>::remove(const Key& key){
       }
 
       while(iterator){
-        if(iterator->right == NULL){
+        if(!iterator->right){
 
-          if(iterator->left != NULL){
+          if(iterator->left){
             iterator->parent->right = iterator->left;
             iterator->left->parent = iterator->parent;
           }
@@ -212,29 +213,29 @@ void BSTree<Key, Value>::put(const Key& key, const Value& value){
 
   if(this->root == NULL){
     this->root = new BinaryNode<Key,Value>(key, value);
-    this->root->left = NULL;
-    this->root->right = NULL;
-    this->root->parent = NULL;
     _size = 1;
     return;
   }
 
   BinaryNode<Key, Value> *newNode;
   newNode = new BinaryNode<Key, Value>(key, value);
-  newNode->right = NULL;
-  newNode->left = NULL;
   _size++;
 
   while(iterator){
 
-    if(iterator->key > key && iterator->left == NULL){
+    if(iterator->key == key){
+      iterator->val = value;
+      return;
+    }
+
+    if(iterator->key > key && !iterator->left){
 
       newNode->parent = iterator;
       iterator->left = newNode;
       return;
     }
 
-    if(iterator->key < key && iterator->right == NULL){
+    if(iterator->key < key && !iterator->right){
 
       newNode->parent = iterator;
       iterator->right = newNode;
@@ -255,7 +256,7 @@ Key BSTree<Key, Value>::minimum(){
 
   while(iterator){
 
-    if(iterator->left == NULL)
+    if(!iterator->left)
       return iterator->key;
 
     iterator = iterator->left;
@@ -271,7 +272,7 @@ Key BSTree<Key, Value>::maximum(){
 
   while(iterator){
 
-    if(iterator->right == NULL)
+    if(!iterator->right)
       return iterator->key;
 
     iterator = iterator->right;
@@ -298,20 +299,20 @@ Key BSTree<Key, Value>::successor(const Key& key){
       iterator = iterator->right;
   }
 
-  if(iterator == NULL)
+  if(!iterator)
     throw "key does not exists.";
 
   //to find smallest node in right subtree
-  if(iterator->right != NULL){
+  if(iterator->right){
     iterator = iterator->right;
 
-    while(iterator != NULL){
-      if(iterator->left == NULL)
+    while(iterator){
+      if(!iterator->left)
         break;
       iterator = iterator->left;
     }
     
-    if(iterator == NULL)
+    if(!iterator)
       throw "No successor exists for given key.";
 
     return iterator->key;
@@ -325,7 +326,7 @@ Key BSTree<Key, Value>::successor(const Key& key){
       iterator = iterator->parent;
     }
 
-    if(iterator == NULL)
+    if(!iterator)
       throw "No successor exists for given key.";
   }
 }
@@ -347,20 +348,20 @@ Key BSTree<Key, Value>::predecessor(const Key& key){
       iterator = iterator->right;
   }
 
-  if(iterator == NULL)
+  if(!iterator)
     throw "key does not exists.";
 
   //to find largest node in left subtree
-  if(iterator->left != NULL){
+  if(iterator->left){
     iterator = iterator->left;
 
-    while(iterator != NULL){
-      if(iterator->right == NULL)
+    while(iterator){
+      if(!iterator->right)
         break;
       iterator = iterator->right;
     }
     
-    if(iterator == NULL)
+    if(!iterator)
       throw "No predecessor exists for given key.";
 
     return iterator->key;
@@ -374,7 +375,7 @@ Key BSTree<Key, Value>::predecessor(const Key& key){
       iterator = iterator->parent;
     }
 
-    if(iterator == NULL)
+    if(!iterator)
       throw "No predecessor exists for given key.";
   }
 }
@@ -387,7 +388,7 @@ int BSTree<Key, Value>::getHeight(){
 
 template<class Key, class Value>
 int BSTree<Key, Value>::height(BinaryNode<Key, Value>* rt){
-  if(rt == NULL)
+  if(!rt)
     return 0;
 
   int lHeight = height(rt->left);
@@ -399,7 +400,7 @@ int BSTree<Key, Value>::height(BinaryNode<Key, Value>* rt){
 template<class Key, class Value>
 int BSTree<Key, Value>::size(){
 
-  if(this->root == NULL)
+  if(!this->root)
     return 0;
 
   return _size;

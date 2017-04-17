@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
-#include "BinaryTree.hpp"
+#include "AVL.hpp"
 
 using namespace std;
 
@@ -20,6 +20,9 @@ int options(){
 	cout<<"[9] Print in order\n";
 	cout<<"[10] Print pre order\n";
 	cout<<"[11] Print post order\n";
+	cout<<"[12] Height\n";
+	cout<<"[13] Size\n";
+	cout<<"[14] Print\n";
 	cout<<"[0] Exit\n";
 
 	cout<<"Enter your choice : ";
@@ -31,8 +34,8 @@ int options(){
 
 int main(int arc, char* argv[]){
 
-	cout<<"|||||\tBinary Tree\t|||||\n";
-	BinaryTree<int, int> tree;
+	cout<<"|||||\tAVL Tree\t|||||\n";
+	AVL<int, int> tree;
 	int key;
 	int value;
 
@@ -63,7 +66,10 @@ int main(int arc, char* argv[]){
 
 			case 4 :	cout<<"Enter key : ";
 						cin>>key;
-						cout<< tree.has(key) ? "Key exists.\n" : "Key doesn't exists.\n";
+						if(tree.has(key))
+							cout<<"Key exists.\n";
+						else
+							cout<<"Key doesn't exists.\n";
 						break;
 
 			case 5 :	cout<<"Enter key : ";
@@ -112,6 +118,15 @@ int main(int arc, char* argv[]){
 
 			case 11 :	tree.print_post_order();
 						cout<<endl;
+						break;
+
+			case 12 :	cout<<tree.getHeight()<<endl;
+						break;
+
+			case 13 :	cout<<tree.size()<<endl;
+						break;
+
+			case 14 :	tree.print();
 						break;
 
 			case 0 :	exit(EXIT_SUCCESS);

@@ -34,6 +34,7 @@ int options(){
 
 int main(int arc, char* argv[]){
 
+	cout<<"|||||\tBinary Search Tree\t|||||\n";
 	BSTree<int, int> tree;
 	int key;
 	int value;
